@@ -43,7 +43,6 @@ public class AndroidCoreActivity extends Activity implements RemoteObjectDelegat
 			}
 		} else {
 			
-			
 			if (results instanceof User) {
 
 				User user = (User) results;
@@ -52,7 +51,6 @@ public class AndroidCoreActivity extends Activity implements RemoteObjectDelegat
 						this, R.layout.simplerow, user);
 
 				listView.setAdapter(userAdapter);
-					
 			}
 		}
 	}	
