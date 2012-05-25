@@ -1,4 +1,4 @@
-package android.core.http;
+package com.riksof.a320.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;

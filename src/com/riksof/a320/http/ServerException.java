@@ -1,4 +1,4 @@
-package android.core.http;
+package com.riksof.a320.http;
 
 public class ServerException extends Exception {
 

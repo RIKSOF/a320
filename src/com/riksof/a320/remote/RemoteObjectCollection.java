@@ -1,12 +1,13 @@
-package android.core.remote;
+package com.riksof.a320.remote;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.core.http.CoreHttpClient;
-import android.core.http.ServerException;
-import android.core.json.JsonController;
+import com.riksof.a320.http.CoreHttpClient;
+import com.riksof.a320.http.ServerException;
+import com.riksof.a320.json.JsonController;
+
 import android.os.AsyncTask;
 
 public abstract class RemoteObjectCollection<T extends RemoteObject> extends AsyncTask<Object, Void, Object>{
@@ -51,18 +52,25 @@ public abstract class RemoteObjectCollection<T extends RemoteObject> extends Asy
 		
 		return remoteObject;
 	}
+
+	protected Object getRemoteObject(String url,  Class<T> type){
+		CoreHttpClient http = new CoreHttpClient();
+
+		RemoteObject remoteObject = null;
+		
+		String response = null;
+		try {
+
+			response = http
+					.executeGet(url);
+
+			remoteObject = JsonController.Deserialize(
+					response, type);
+			
+		} catch (ServerException e) {
+			e.printStackTrace();
+		}
+		
+		return remoteObject;
+	}
 }
-
-
-//for(T application : applications){
-//	
-//	Log.i(TAG, "getApplicationBuild: " + application.getApplicationBuild());
-//	Log.i(TAG, "getApplicationKey: " + application.getApplicationKey());
-//	Log.i(TAG, "getApplicationNumber: " + application.getApplicationNumber());
-//	Log.i(TAG, "getApplicationRegistrationDate: " + application.getApplicationRegistrationDate());
-//	Log.i(TAG, "getApplicationTitle: " + application.getApplicationTitle());
-//	Log.i(TAG, "getPasswordValidationRegex: " + application.getPasswordValidationRegex());
-//	Log.i(TAG, "getUserId: " + application.getUserId());
-//	
-//}
-

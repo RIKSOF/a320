@@ -1,7 +1,7 @@
 /**
  * 
  */
-package android.core.remote;
+package com.riksof.a320.remote;
 
 /**
  * @author rizwan

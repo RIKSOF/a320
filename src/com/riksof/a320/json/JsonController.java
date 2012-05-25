@@ -1,4 +1,4 @@
-package android.core.json;
+package com.riksof.a320.json;
 
 import java.lang.reflect.Type;
 
