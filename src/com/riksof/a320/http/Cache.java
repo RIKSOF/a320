@@ -2,6 +2,8 @@ package com.riksof.a320.http;
 
 import java.util.HashMap;
 
+import com.riksof.a320.remote.image.FileCache;
+
 public class Cache {
 
 	private static HashMap<String, String> cacheMap = new HashMap<String, String>();

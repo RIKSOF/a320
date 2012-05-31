@@ -35,6 +35,7 @@ import android.util.Log;
 
 import com.riksof.a320.c2dm.C2DMBaseReceiver;
 import com.riksof.a320.http.Cache;
+import com.riksof.a320.remote.image.FileCache;
 
 public class C2DMReceiver extends C2DMBaseReceiver {
 	public C2DMReceiver() {
@@ -112,6 +113,8 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 		notificationManager.notify(10001, notification);
 
 		Cache.getInstance().remove(unValidatedURL);
+		FileCache fc = new FileCache(context);
+		fc.clear();
 		
 		Log.w("C2DMReceiver", "finish");
 	}

@@ -4,14 +4,9 @@ import java.util.ArrayList;
 
 import com.riksof.a320.json.CollectionType;
 import com.riksof.a320.remote.RemoteObjectCollection;
-import com.riksof.a320.remote.RemoteObjectDelegate;
 
 public class Applications extends RemoteObjectCollection<Application> {
 	
-	public Applications(RemoteObjectDelegate delegate) {
-		super(delegate);
-	}
-
 	@Override
 	protected Object doInBackground(Object... object) {
 		

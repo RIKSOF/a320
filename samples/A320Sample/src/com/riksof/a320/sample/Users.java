@@ -1,13 +1,8 @@
 package com.riksof.a320.sample;
 
 import com.riksof.a320.remote.RemoteObjectCollection;
-import com.riksof.a320.remote.RemoteObjectDelegate;
 
 public class Users extends RemoteObjectCollection<User> {
-	
-	public Users(RemoteObjectDelegate delegate) {
-		super(delegate);
-	}
 
 	@Override
 	protected Object doInBackground(Object... object) {

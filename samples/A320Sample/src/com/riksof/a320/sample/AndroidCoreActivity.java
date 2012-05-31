@@ -40,11 +40,11 @@ public class AndroidCoreActivity extends Activity implements RemoteObjectDelegat
 	}
 
 	private void load() {
-//		new Applications(this);
-//		applications.load(this);
+		Applications applications = new Applications();
+		applications.load(this);
 		
-		new Users(this);
-		//users.load(this);
+		Users users = new Users();
+		users.load(this);
 	}
 
 	@Override
@@ -55,10 +55,14 @@ public class AndroidCoreActivity extends Activity implements RemoteObjectDelegat
 			
 			if(results instanceof List){
 				List<Application> list = (List<Application>) results;
+				
+				for(Application app : list){
+					app.setApplicationURL("http://a3.twimg.com/profile_images/670625317/aam-logo-v3-twitter.png");
+				}
 
 				if(list.get(0) instanceof Application){
 					
-					RemoteAdapter<Application> listAdapter = new RemoteAdapter<Application>(
+					SampleAdapter<Application> listAdapter = new SampleAdapter<Application>(
 								this, R.layout.simplerow, list);
 						
 						listView.setAdapter(listAdapter);
@@ -69,7 +73,7 @@ public class AndroidCoreActivity extends Activity implements RemoteObjectDelegat
 
 					User user = (User) results;
 
-					RemoteAdapter<User> userAdapter = new RemoteAdapter<User>(
+					SampleAdapter<User> userAdapter = new SampleAdapter<User>(
 							this, R.layout.simplerow, user);
 
 					listView.setAdapter(userAdapter);

@@ -25,16 +25,10 @@ public abstract class RemoteObjectCollection<T extends RemoteObject> extends Asy
 	 */
 	protected List<RemoteObjectDelegate> delegates_ = new ArrayList<RemoteObjectDelegate>();
 	
-	public RemoteObjectCollection(RemoteObjectDelegate delegate){
-
-		load(delegate);
-	}
-	
-	protected void load(RemoteObjectDelegate delegate) {
+	public void load(RemoteObjectDelegate delegate) {
 		
 		delegates_.add(delegate);
-		this.execute();
-		
+		this.execute();		
 	}
 	
 	@Override

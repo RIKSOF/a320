@@ -13,6 +13,7 @@ public class Application extends RemoteObject {
 	@Expose private String applicationRegistrationDate; 
 	@Expose private String userId;
 	@Expose private String passwordValidationRegex;
+	private String applicationURL;
 	
 	public String getApplicationTitle() {
 		return applicationTitle;
@@ -56,4 +57,11 @@ public class Application extends RemoteObject {
 	public void setPasswordValidationRegex(String passwordValidationRegex) {
 		this.passwordValidationRegex = passwordValidationRegex;
 	}
+	public String getApplicationURL() {
+		return applicationURL;
+	}
+	public void setApplicationURL(String applicationURL) {
+		this.applicationURL = applicationURL;
+	}
+	
 }
