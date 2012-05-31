@@ -4,12 +4,20 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.AsyncTask;
+
 import com.riksof.a320.http.CoreHttpClient;
 import com.riksof.a320.http.ServerException;
 import com.riksof.a320.json.JsonController;
 
-import android.os.AsyncTask;
-
+/**
+ * This is the class where asynchronous task are performed
+ * User has to override the doInBackground method where user will call the getRemoteObject method
+ *  
+ * @author rizwan
+ *
+ * @param <T>
+ */
 public abstract class RemoteObjectCollection<T extends RemoteObject> extends AsyncTask<Object, Void, Object>{
 
 	/**
@@ -17,7 +25,12 @@ public abstract class RemoteObjectCollection<T extends RemoteObject> extends Asy
 	 */
 	protected List<RemoteObjectDelegate> delegates_ = new ArrayList<RemoteObjectDelegate>();
 	
-	public void load(RemoteObjectDelegate delegate) {
+	public RemoteObjectCollection(RemoteObjectDelegate delegate){
+
+		load(delegate);
+	}
+	
+	protected void load(RemoteObjectDelegate delegate) {
 		
 		delegates_.add(delegate);
 		this.execute();

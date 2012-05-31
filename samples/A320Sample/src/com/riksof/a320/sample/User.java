@@ -1,8 +1,7 @@
 package com.riksof.a320.sample;
 
-import android.core.remote.RemoteObject;
-
 import com.google.gson.annotations.Expose;
+import com.riksof.a320.remote.RemoteObject;
 
 public class User extends RemoteObject {
 

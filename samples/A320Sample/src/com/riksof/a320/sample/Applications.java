@@ -2,17 +2,22 @@ package com.riksof.a320.sample;
 
 import java.util.ArrayList;
 
-import android.core.json.CollectionType;
-import android.core.remote.RemoteObjectCollection;
+import com.riksof.a320.json.CollectionType;
+import com.riksof.a320.remote.RemoteObjectCollection;
+import com.riksof.a320.remote.RemoteObjectDelegate;
 
 public class Applications extends RemoteObjectCollection<Application> {
+	
+	public Applications(RemoteObjectDelegate delegate) {
+		super(delegate);
+	}
 
 	@Override
 	protected Object doInBackground(Object... object) {
 		
-		return getRemoteObject("http://23.23.181.66:8080/application/list",
+		return getRemoteObject("http://192.168.0.115:8080/application/list",
 				new CollectionType<ArrayList<Application>>() {}.getCollectionType());	
-	} 
+	}
 
 //for(T application : applications){
 //	

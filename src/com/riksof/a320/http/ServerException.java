@@ -2,6 +2,11 @@ package com.riksof.a320.http;
 
 public class ServerException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	// Constructor for Custom DAOs Exception
 	public ServerException() {
 		super();
