@@ -1,3 +1,19 @@
+/**
+ * Copyright 2012 RIKSOF
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http: *www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.riksof.a320.http;
 
 import java.io.BufferedReader;
@@ -23,8 +39,6 @@ import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
-import android.util.Log;
-
 /**
  * This is a custom http client class that is used to simplify the calling of
  * GET and POST requests
@@ -36,8 +50,6 @@ import android.util.Log;
  * 
  */
 public class CoreHttpClient {
-
-	private final String TAG = this.getClass().getName();
 
 	/**
 	 * This method is used to execute Get Http Request
@@ -53,57 +65,51 @@ public class CoreHttpClient {
 
 		try {
 
-			Log.i(TAG, "1");
 			CacheConfig cacheConfig = new CacheConfig();
 			cacheConfig.setMaxCacheEntries(1000);
 			cacheConfig.setMaxObjectSizeBytes(1024 * 1024);
 
-			Log.i(TAG, "2");
 			DefaultHttpClient realClient = new DefaultHttpClient();
 			realClient.addResponseInterceptor(MakeCacheable.INSTANCE, 0);
 			CachingHttpClient httpclient = new CachingHttpClient(realClient,
 					cacheConfig);
 
-			Log.i(TAG, "3");
 			HttpContext localContext = new BasicHttpContext();
 
-			//ResponseCache rc = ResponseCache.getDefault();
-			
 			if(Cache.getInstance().get(url) == null){
 				
-				Log.i(TAG, "4");
 				// Execute HTTP Get Request
 				HttpGet httpget = new HttpGet(url);
 				
 				HttpResponse response = httpclient.execute(httpget, localContext);
 
-				Log.i(TAG, "5");
 				HttpEntity entity = response.getEntity();
-				//String res = EntityUtils.getContentCharSet(entity);
 
-				Log.i(TAG, "6");
 				// Create and convert stream into string
 				InputStream inStream = entity.getContent();
 				responseString = convertStreamToString(inStream);
 
 				Cache.getInstance().put(url, responseString);
 
-				Log.i(TAG, "7");
 			} else {
 				responseString = Cache.getInstance().get(url);
 			}
 
 		} catch (ClientProtocolException e) {
 			// throw custom server exception in case of Exception
+			e.printStackTrace();
 			throw new ServerException("ClientProtocolException");
 		} catch (ConnectTimeoutException e) {
 			// throw custom server exception in case of Exception
+			e.printStackTrace();
 			throw new ServerException("ConnectTimeoutException");
 		} catch (IOException e) {
 			// throw custom server exception in case of Exception
+			e.printStackTrace();
 			throw new ServerException("IOException");
 		} catch (Exception e) {
 			// throw custom server exception in case of Exception
+			e.printStackTrace();
 			throw new ServerException("Exception");
 		} finally {
 		}

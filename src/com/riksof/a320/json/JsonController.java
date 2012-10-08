@@ -1,3 +1,19 @@
+/**
+ * Copyright 2012 RIKSOF
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http: *www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.riksof.a320.json;
 
 import java.lang.reflect.Type;
@@ -24,8 +40,8 @@ public class JsonController {
 	 * @return
 	 */
 	public static String Serialize(Object o) {
-		Gson gson = new GsonBuilder().setPrettyPrinting()
-				.excludeFieldsWithoutExposeAnnotation().create();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+				//.excludeFieldsWithoutExposeAnnotation().create();
 		String content = gson.toJson(o);
 
 		return content;
@@ -46,8 +62,8 @@ public class JsonController {
 	 * @return
 	 */
 	public static <T> T Deserialize(String str, Class<T> classOfT) {
-		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-				.create();
+		Gson gson = new GsonBuilder().create();
+					//.excludeFieldsWithoutExposeAnnotation().create();
 		return gson.fromJson(str, classOfT);
 	}
 
@@ -64,8 +80,8 @@ public class JsonController {
 	 */
 	public static <T> T Deserialize(String json, Type listType) {
 		try {
-			Gson gson = new GsonBuilder()
-					.excludeFieldsWithoutExposeAnnotation().create();
+			Gson gson = new GsonBuilder().create();
+					//.excludeFieldsWithoutExposeAnnotation().create();
 			return gson.fromJson(json, listType);
 		} catch (Exception e) {
 			e.printStackTrace();
