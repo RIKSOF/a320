@@ -69,30 +69,38 @@ public class CoreHttpClient {
 			cacheConfig.setMaxCacheEntries(1000);
 			cacheConfig.setMaxObjectSizeBytes(1024 * 1024);
 
+			// Create http client object
 			DefaultHttpClient realClient = new DefaultHttpClient();
 			realClient.addResponseInterceptor(MakeCacheable.INSTANCE, 0);
 			CachingHttpClient httpclient = new CachingHttpClient(realClient,
 					cacheConfig);
 
+			// Create http context object
 			HttpContext localContext = new BasicHttpContext();
 
+			// Check for cached data against URL
 			if (Cache.getInstance().get(url) == null) {
 
 				// Execute HTTP Get Request
 				HttpGet httpget = new HttpGet(url);
 
+				// Get http response
 				HttpResponse response = httpclient.execute(httpget,
 						localContext);
 
+				// Create http entity object
 				HttpEntity entity = response.getEntity();
 
 				// Create and convert stream into string
 				InputStream inStream = entity.getContent();
 				responseString = convertStreamToString(inStream);
 
+				// Cache url data
 				Cache.getInstance().put(url, responseString);
 
 			} else {
+				
+				// Returned cached data
 				responseString = Cache.getInstance().get(url);
 			}
 
