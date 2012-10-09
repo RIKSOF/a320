@@ -17,7 +17,7 @@
 package com.riksof.a320.remote;
 
 /**
- * All the POJOs have to extend this class
+ * The Object Model class will extend this class
  * 
  * @author rizwan
  *

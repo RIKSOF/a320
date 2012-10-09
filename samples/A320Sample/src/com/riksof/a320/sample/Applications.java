@@ -13,17 +13,4 @@ public class Applications extends RemoteObjectCollection<Application> {
 		return getRemoteObject("http://192.168.0.115:8080/application/list",
 				new CollectionType<ArrayList<Application>>() {}.getCollectionType());	
 	}
-
-//for(T application : applications){
-//	
-//		Log.i(TAG, "getApplicationBuild: " + application.getApplicationBuild());
-//		Log.i(TAG, "getApplicationKey: " + application.getApplicationKey());
-//		Log.i(TAG, "getApplicationNumber: " + application.getApplicationNumber());
-//		Log.i(TAG, "getApplicationRegistrationDate: " + application.getApplicationRegistrationDate());
-//		Log.i(TAG, "getApplicationTitle: " + application.getApplicationTitle());
-//		Log.i(TAG, "getPasswordValidationRegex: " + application.getPasswordValidationRegex());
-//		Log.i(TAG, "getUserId: " + application.getUserId());
-//	
-//}
-
 }

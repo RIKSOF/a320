@@ -10,7 +10,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.riksof.a320.c2dm.common.R;
 import com.riksof.a320.remote.RemoteObjectDelegate;
 
 public class AndroidCoreActivity extends Activity implements RemoteObjectDelegate {
@@ -40,8 +39,8 @@ public class AndroidCoreActivity extends Activity implements RemoteObjectDelegat
 	}
 
 	private void load() {
-		Applications applications = new Applications();
-		applications.load(this);
+		//Applications applications = new Applications();
+		//applications.load(this);
 		
 		Users users = new Users();
 		users.load(this);

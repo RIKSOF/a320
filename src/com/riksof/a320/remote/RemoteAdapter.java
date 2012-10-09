@@ -25,23 +25,26 @@ import android.widget.BaseAdapter;
  * This is a base Remote Adapter class that contain common code of adapter class
  * 
  * @author rizwan
- *
+ * 
  */
 public abstract class RemoteAdapter extends BaseAdapter {
-	
+
 	// Activity object
 	protected Activity activity;
 
 	// Row number
 	protected int row;
-	
+
 	// Inflater object
 	protected static LayoutInflater inflater = null;
-	
+
 	/**
+	 * Custom constructor for remote adapter
 	 * 
 	 * @param a
+	 *            is an activity
 	 * @param simplerow
+	 *            is the row number
 	 * @param list
 	 */
 	public RemoteAdapter(Activity a, int simplerow, Object objects) {

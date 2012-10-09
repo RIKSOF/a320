@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.riksof.a320.c2dm.common.R;
 import com.riksof.a320.remote.RemoteAdapter;
 import com.riksof.a320.remote.image.ImageLoader;
 
@@ -56,7 +55,7 @@ public class SampleAdapter<RemoteObject> extends RemoteAdapter {
 		View vi = convertView;
 
 		if (vi == null)
-			vi = inflater.inflate(layout, null);
+			vi = inflater.inflate(position, null);
 
 		TextView text = (TextView) vi.findViewById(R.id.rowTextView);
 		ImageView image = (ImageView) vi.findViewById(R.id.image);

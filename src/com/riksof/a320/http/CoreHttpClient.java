@@ -76,12 +76,13 @@ public class CoreHttpClient {
 
 			HttpContext localContext = new BasicHttpContext();
 
-			if(Cache.getInstance().get(url) == null){
-				
+			if (Cache.getInstance().get(url) == null) {
+
 				// Execute HTTP Get Request
 				HttpGet httpget = new HttpGet(url);
-				
-				HttpResponse response = httpclient.execute(httpget, localContext);
+
+				HttpResponse response = httpclient.execute(httpget,
+						localContext);
 
 				HttpEntity entity = response.getEntity();
 

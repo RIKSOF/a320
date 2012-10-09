@@ -22,12 +22,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * This is the main class for Serializing and Deserializing a json and object respectively.
- * JsonController is typically used by invoking {@link #Serialize(Object)} or {@link #Deserialize(String, Class)} 
- * or {@link #Deserialize(String, Type)} methods on it statically.
- *  
+ * This is the main class for Serializing and Deserializing a json and object
+ * respectively. JsonController is typically used by invoking
+ * {@link #Serialize(Object)} or {@link #Deserialize(String, Class)} or
+ * {@link #Deserialize(String, Type)} methods on it statically.
+ * 
  * @author rizwan
- *
+ * 
  */
 public class JsonController {
 
@@ -41,7 +42,7 @@ public class JsonController {
 	 */
 	public static String Serialize(Object o) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-				//.excludeFieldsWithoutExposeAnnotation().create();
+		// .excludeFieldsWithoutExposeAnnotation().create();
 		String content = gson.toJson(o);
 
 		return content;
@@ -63,25 +64,28 @@ public class JsonController {
 	 */
 	public static <T> T Deserialize(String str, Class<T> classOfT) {
 		Gson gson = new GsonBuilder().create();
-					//.excludeFieldsWithoutExposeAnnotation().create();
+		// .excludeFieldsWithoutExposeAnnotation().create();
 		return gson.fromJson(str, classOfT);
 	}
 
 	/**
 	 * This method deserializes the specified Json into an object of the
 	 * specified type. This method is useful if the specified object is a
-	 * generic type. 
+	 * generic type.
 	 * 
-	 * @param <T> the type of the desired object
-	 * @param json the string from which the object is to be deserialized
-	 * @param listType The specific genericized type of src.
-	 *
+	 * @param <T>
+	 *            the type of the desired object
+	 * @param json
+	 *            the string from which the object is to be deserialized
+	 * @param listType
+	 *            The specific genericized type of src.
+	 * 
 	 * @return
 	 */
 	public static <T> T Deserialize(String json, Type listType) {
 		try {
 			Gson gson = new GsonBuilder().create();
-					//.excludeFieldsWithoutExposeAnnotation().create();
+			// .excludeFieldsWithoutExposeAnnotation().create();
 			return gson.fromJson(json, listType);
 		} catch (Exception e) {
 			e.printStackTrace();

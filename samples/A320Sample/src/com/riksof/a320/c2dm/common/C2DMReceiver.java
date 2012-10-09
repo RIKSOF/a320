@@ -36,6 +36,7 @@ import android.util.Log;
 import com.riksof.a320.c2dm.C2DMBaseReceiver;
 import com.riksof.a320.http.Cache;
 import com.riksof.a320.remote.image.FileCache;
+import com.riksof.a320.sample.R;
 
 public class C2DMReceiver extends C2DMBaseReceiver {
 	public C2DMReceiver() {

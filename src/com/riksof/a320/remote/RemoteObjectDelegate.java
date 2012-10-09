@@ -16,8 +16,20 @@
 
 package com.riksof.a320.remote;
 
+/**
+ * This interface is used to enhance the object loading with specific features
+ * 
+ * @author rizwan
+ * 
+ */
 public interface RemoteObjectDelegate {
-	
+
+	/**
+	 * We have received a response This method will be called when the response
+	 * is received from server
+	 * 
+	 * @param results
+	 */
 	void update(Object results);
 
 }

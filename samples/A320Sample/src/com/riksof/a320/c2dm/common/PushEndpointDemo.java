@@ -15,14 +15,10 @@
 package com.riksof.a320.c2dm.common;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-
-import com.riksof.a320.c2dm.C2DMessaging;
-import com.riksof.a320.c2dm.common.R;
 
 public class PushEndpointDemo extends Activity {
+	
+	/**
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,4 +29,5 @@ public class PushEndpointDemo extends Activity {
 		EditText acct=(EditText)findViewById(R.id.account);		
 		C2DMessaging.register(this, acct.getText().toString());
 	}
+	**/
 }

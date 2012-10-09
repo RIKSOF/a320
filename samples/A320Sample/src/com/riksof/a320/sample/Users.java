@@ -9,12 +9,5 @@ public class Users extends RemoteObjectCollection<User> {
 		
 		return getRemoteObject("https://graph.facebook.com/riz.ahmed.52", User.class);
 	}
-	
-//	Log.i(TAG, "getFirst_name: " + user.getFirst_name());
-//	Log.i(TAG, "getId: " + user.getId());
-//	Log.i(TAG, "getLast_name: " + user.getLast_name());
-//	Log.i(TAG, "getLink: " + user.getLink());
-//	Log.i(TAG, "getName: " + user.getName());
-//	Log.i(TAG, "getUsername: " + user.getUsername());
 }
 
