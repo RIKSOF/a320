@@ -19,12 +19,21 @@ package com.riksof.a320.utils;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import android.util.Log;
-
+/**
+ * This is a utility class that contains utility functions in it
+ * 
+ * @author rizwan
+ *
+ */
 public class Utils {
-	public static void CopyStream(InputStream is, OutputStream os) {
-		Log.i("Utils", "Copy Stream");
 
+	/**
+	 * Reads content from input stream and write it to output stream
+	 * 
+	 * @param is is input stream
+	 * @param os is output stream
+	 */
+	public static void CopyStream(InputStream is, OutputStream os) {
 		final int buffer_size = 1024;
 		try {
 			byte[] bytes = new byte[buffer_size];
