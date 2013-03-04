@@ -55,6 +55,17 @@ public abstract class RemoteObjectCollection<T extends RemoteObject> extends
 	}
 
 	/**
+	 * This start the process of executing URL and get the response
+	 * 
+	 * @param delegate
+	 */
+	public void add(RemoteObjectDelegate delegate, RemoteObject remoteObject) {
+
+		delegates_.add(delegate);
+		this.execute(remoteObject);
+	}
+
+	/**
 	 * This method will be called after the response is received from URL It
 	 * will update all the registered delegates
 	 */
@@ -126,5 +137,32 @@ public abstract class RemoteObjectCollection<T extends RemoteObject> extends
 
 		// Return remote object
 		return remoteObject;
+	}
+
+	/**
+	 * 
+	 * @param url
+	 * @param postMessage
+	 * @return
+	 */
+	protected Object postRemoteObject(String url, RemoteObject remoteObject) {
+
+		CoreHttpClient http = new CoreHttpClient();
+		String response = null;
+
+		try {
+
+			// serialize the string into object of given type
+			String postMessage = JsonController.Serialize(remoteObject);
+
+			// Get response string
+			response = http.executePost(url, postMessage);
+
+		} catch (ServerException e) {
+			e.printStackTrace();
+		}
+
+		// Return remote object
+		return response;
 	}
 }
