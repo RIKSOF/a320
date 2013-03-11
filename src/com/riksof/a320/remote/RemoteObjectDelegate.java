@@ -30,6 +30,18 @@ public interface RemoteObjectDelegate {
 	 * 
 	 * @param results
 	 */
-	void update(Object results);
+	void modelLoading();
+
+	/**
+	 * We have received a response This method will be called when the response
+	 * is received from server
+	 * 
+	 * @param results
+	 */
+	void modelLoaded(Object results);
+
+	void didInsertObject(Object results);
+	void didDeleteObject(Object results);
+	void didUpdateObject(Object results);
 
 }

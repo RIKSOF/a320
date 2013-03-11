@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
@@ -61,6 +64,8 @@ import android.util.Log;
  */
 public class CoreHttpClient {
 
+	public Map<String, String> headers;
+	
 	// By default time out is 100 seconds
 	public static int connectionTimeOut= 100000;
 	public static int socketTimeOut = 100000;
@@ -77,6 +82,8 @@ public class CoreHttpClient {
 		// Response String
 		String responseString = null;
 
+		headers = new HashMap<String,String>();
+		
 		try {
 
 			CacheConfig cacheConfig = new CacheConfig();
@@ -106,6 +113,11 @@ public class CoreHttpClient {
 				HttpResponse response = httpclient.execute(httpget,
 						localContext);
 
+				for(Header h : response.getAllHeaders()){
+					headers.put(h.getName(), h.getValue());
+				}
+				
+				
 				// Create http entity object
 				HttpEntity entity = response.getEntity();
 
@@ -133,7 +145,7 @@ public class CoreHttpClient {
 		} catch (IOException e) {
 			// throw custom server exception in case of Exception
 			e.printStackTrace();
-			throw new ServerException("IOException");
+			throw new ServerException("Request Timeout");
 		} catch (Exception e) {
 			// throw custom server exception in case of Exception
 			e.printStackTrace();
@@ -195,7 +207,7 @@ public class CoreHttpClient {
 		} catch (IOException e) {
 			// throw custom server exception in case of Exception
 			Log.e("HttpClient", "IO Exception");
-			throw new ServerException("IO Exception");
+			throw new ServerException("Request Timeout");
 		}
 
 		return responseString;
@@ -279,7 +291,7 @@ public class CoreHttpClient {
 		} catch (IOException e) {
 			// throw custom server exception in case of Exception
 			Log.e("HttpClient", "IO Exception");
-			throw new ServerException("IO Exception");
+			throw new ServerException("Request Timeout");
 		}
 
 		return responseString;

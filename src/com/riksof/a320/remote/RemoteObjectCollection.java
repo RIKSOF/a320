@@ -74,7 +74,7 @@ public abstract class RemoteObjectCollection<T extends RemoteObject> extends
 
 		// Iterate over all registered delegates and call there update() method
 		for (RemoteObjectDelegate delegate : delegates_) {
-			delegate.update(results);
+			delegate.modelLoaded(results);
 		}
 	}
 

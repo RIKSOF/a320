@@ -41,7 +41,7 @@ public class JsonController {
 	 * @return
 	 */
 	public static String Serialize(Object o) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 		// .excludeFieldsWithoutExposeAnnotation().create();
 		String content = gson.toJson(o);
 
@@ -63,7 +63,7 @@ public class JsonController {
 	 * @return
 	 */
 	public static <T> T Deserialize(String str, Class<T> classOfT) {
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		// .excludeFieldsWithoutExposeAnnotation().create();
 		return gson.fromJson(str, classOfT);
 	}
