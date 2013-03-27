@@ -18,6 +18,7 @@ package com.riksof.a320.utils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 /**
  * This is a utility class that contains utility functions in it
@@ -46,4 +47,9 @@ public class Utils {
 		} catch (Exception ex) {
 		}
 	}
+
+	public static String getUniqueId() {  
+		  return UUID.randomUUID().toString();   
+	}  
+	
 }

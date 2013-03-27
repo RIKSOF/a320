@@ -16,6 +16,7 @@
 
 package com.riksof.a320.remote;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,8 @@ import com.riksof.a320.datasource.IDataSource;
 import com.riksof.a320.http.CoreHttpClient;
 import com.riksof.a320.http.ServerException;
 import com.riksof.a320.json.JsonController;
+import com.riksof.a320.utils.A320Settings;
+import com.riksof.a320.utils.Utils;
 
 /**
  * The Object Model class will extend this class
@@ -37,7 +40,12 @@ import com.riksof.a320.json.JsonController;
  * @author rizwan
  *
  */
-public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
+public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * This start the process of executing URL and get the response
@@ -67,7 +75,7 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 	}
 
 	/**
-	 * This start the process of executing URL and get the response
+	 * This start the process of executing URL and save the response
 	 * 
 	 * @param delegate
 	 */
@@ -75,6 +83,40 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 		
 		// Set request type
 		requestType = CoreHttpClient.POST_TYPE;
+
+		// Set delegate
+		delegateToAdd = delegate;
+
+		// start sync task
+		this.execute(remoteObject);
+	}
+
+	/**
+	 * This start the process of executing URL and update
+	 * 
+	 * @param delegate
+	 */
+	public void update(RemoteObjectDelegate delegate, RemoteObject remoteObject) {
+		
+		// Set request type
+		requestType = CoreHttpClient.PUT_TYPE;
+
+		// Set delegate
+		delegateToAdd = delegate;
+
+		// start sync task
+		this.execute(remoteObject);
+	}
+
+	/**
+	 * This start the process of executing URL and delete
+	 * 
+	 * @param delegate
+	 */
+	public void delete(RemoteObjectDelegate delegate, RemoteObject remoteObject) {
+		
+		// Set request type
+		requestType = CoreHttpClient.DELETE_TYPE;
 
 		// Set delegate
 		delegateToAdd = delegate;
@@ -98,13 +140,28 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 	@Override
 	protected void onPostExecute(Object results) {
 
-		// Iterate over all registered delegates and call there modelLoaded() method
-		for (RemoteObjectDelegate delegate : delegates_.values()) {
+		if( delegates_ != null ){
+
+			Log.d("RemoteObject: ", "Inside Post Execute");
 			
-			if( requestType == CoreHttpClient.POST_TYPE ){
-				delegate.didInsertObject(results);
-			} else if( requestType == CoreHttpClient.GET_TYPE ){
-				delegate.modelLoaded(results);
+			// Iterate over all registered delegates and call there modelLoaded() method
+			for (RemoteObjectDelegate delegate : delegates_.values()) {
+				
+				if(delegate != null){
+					
+					Log.d("RemoteObject: ", "Iterating over delegates: " + delegate);
+
+					if( requestType == CoreHttpClient.POST_TYPE ){
+						delegate.didInsertObject(results);
+					} else if ( requestType == CoreHttpClient.PUT_TYPE ){
+						delegate.didUpdateObject(results);
+					} else if ( requestType == CoreHttpClient.DELETE_TYPE ){
+						delegate.didDeleteObject(results);
+					} else if( requestType == CoreHttpClient.GET_TYPE ){
+						Log.d("RemoteObject: ", "Calling Model Loaded: " + results);
+						delegate.modelLoaded(results);
+					}
+				}
 			}
 		}
 	}
@@ -121,9 +178,9 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 		try{
 			
 			// If type is POST
-			if( requestType == CoreHttpClient.POST_TYPE ){
+			if( requestType == CoreHttpClient.POST_TYPE || requestType == CoreHttpClient.PUT_TYPE ){
 				
-				Log.d("RemoteObject: Type ", "POST");
+				Log.d("RemoteObject: Type ", "POST or PUT");
 				
 				try{
 
@@ -138,8 +195,8 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 						Log.d("RemoteObject: ", " Adding Local object ");
 
 						// append local id
-						uri = collectionURL+"/Local-"+(_dataSource.fetchRowCount() + 1);					
-
+						uri = collectionURL+"/"+Utils.getUniqueId();
+						
 						// initialize delegate map
 						newObject.delegates_ = new HashMap<String, RemoteObjectDelegate>();
 
@@ -156,8 +213,12 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 							
 						}
 
-						// Add new object in cache
-						objects_.put(uri, newObject);
+						delegates_ = newObject.delegates_;
+
+						//if(A320Settings.memoryCacheEnabled){
+							// Add new object in cache
+							objects_.put(uri, newObject);
+						//}
 
 					} else {
 
@@ -175,16 +236,27 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 
 							// copy all delegates that are already part of this object
 							newObject.delegates_.putAll(oldObject.delegates_);
+
+							// Added after cache remove start (to add list delegate)
+							Map<String, RemoteObjectDelegate> collectionDelegate = 
+								(Map<String, RemoteObjectDelegate>) objects_.get(collectionURL);
+							// copy all list delegates to this object
+							newObject.delegates_.putAll(collectionDelegate);
+							// Added after cache remove end (to add list delegate)
 							
 							// put delegate in delegate map of new object
 							newObject.delegates_.put(delegateToAdd.getClass().getSimpleName(), delegateToAdd);
 
-							// Add new object in cache
-							objects_.put(uri, newObject);
+							delegates_ = newObject.delegates_;
+							
+							//if(A320Settings.memoryCacheEnabled){
+								// Add new object in cache
+								objects_.put(uri, newObject);
+							//}
 						
 						} else if( objects_.get(collectionURL) != null ){
 							
-							Log.d("RemoteObject: ", " Adding Remote object in Cache because of List Registered ");
+							Log.d("RemoteObject: ", " Adding Remote object in Cache because of List Registered: " + collectionURL);
 
 							Map<String, RemoteObjectDelegate> collectionDelegate = 
 								(Map<String, RemoteObjectDelegate>) objects_.get(collectionURL);
@@ -195,14 +267,18 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 							// put delegate in delegate map of new object
 							newObject.delegates_.put(delegateToAdd.getClass().getSimpleName(), delegateToAdd);
 
-							// Add new object in cache
-							objects_.put(uri, newObject);
-						
+							// setting delegates map
+							delegates_ = newObject.delegates_;
+							
+							//if(A320Settings.memoryCacheEnabled){
+								// Add new object in cache
+								objects_.put(uri, newObject);
+							//}
 						}
 					}
 					
 					// Save object in database
-					_dataSource.saveOrUpdate(email, this);
+					_dataSource.saveOrUpdate(email, newObject);
 										
 					// return the list 
 					//return _dataSource.fetch(this);
@@ -218,8 +294,13 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 			
 				id = (String)params[1];
 
-				// First try load data from cache
-				toRet = getCacheObject(id);
+				if(A320Settings.memoryCacheEnabled){
+					// First try load data from cache
+					toRet = getCacheObject(id);
+				
+				} else {
+					Log.d("Remote Object: " , "Memory Cache DISABLED");
+				}
 				
 				// if not found in cache
 				// Check in local database
@@ -232,8 +313,29 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 				// Check in local database
 				if( toRet == null ){
 					
-					toRet = getRemoteObject(id, (Class<T>) params[0]);					
+					return null;
+					//toRet = getRemoteObject(id, (Class<T>) params[0]);					
 				}
+				
+			} else if ( requestType == CoreHttpClient.DELETE_TYPE ){
+
+				Log.d("RemoteObject: ", "DELETE Type");
+				
+				RemoteObject objToDelete = (RemoteObject) objects_.get(uri);
+				
+				if(objToDelete != null && objToDelete.delegates_ != null && delegateToAdd != null){
+					objToDelete.delegates_.put(delegateToAdd.getClass().getSimpleName(),delegateToAdd);
+					delegates_ = objToDelete.delegates_;
+				}
+				
+				
+				// remove data from cache
+				objects_.remove(uri);
+				
+				// remove from database
+				_dataSource.delete(this);
+				
+				return objToDelete;
 			}
 
 		}catch(DataSourceException e){
@@ -258,11 +360,15 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 			// Check if list entry in present in cache
 			if( objects_.get(id) == null ){
 
+				Log.d("Remote: ", "Not found in Cache");
+
 				// If not exist then return null so that all object will be loaded in cache list from database
 				return null;
 				
 			} else {
 				
+				Log.d("Remote: ", "List Object");
+
 				// If list url exists in cache. It means all data in database is loaded in cache
 				// initiate list
 				remoteObjectList = new ArrayList<T>();
@@ -281,7 +387,12 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 					} else {
 						
 						// get delegate map - this map is for collection type
-						delegates_ = (HashMap<String, RemoteObjectDelegate>) objects_.get(key);
+						//delegates_ = ((RemoteObject)objects_.get(key)).delegates_;
+						
+						if(delegates_ == null){
+							delegates_ = new HashMap<String, RemoteObjectDelegate>();
+						}
+						
 						// add this delegate in the list
 						delegates_.put(delegateToAdd.getClass().getSimpleName(),delegateToAdd);
 					
@@ -293,9 +404,14 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 			
 		} else {
 			
+			Log.d("Remote: ", "Single Object");
+			
 			// Check in cache
 			Object toRet = objects_.get(id);
 			
+			// add this delegate in the list
+			delegates_.put(delegateToAdd.getClass().getSimpleName(),delegateToAdd);
+
 			return toRet;
 		}
 	}
@@ -314,10 +430,8 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 		if(id.equals(collectionURL)){
 			
 			String className = type;
-			//String collectionClassName = className + "Collection";
 
 			// Update class type name for list
-			//paramMap.put("type", collectionClassName);
 			type = className + "Collection";
 			
 			// Check if list entry in present in local db
@@ -331,18 +445,20 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 			} else {
 				
 				// If list url exists in database. It means all data in database is loaded from server								
-				//paramMap.put("type", className);
 				type = className;
 				remoteObjectList = (List<RemoteObject>) _dataSource.fetch(this);
 				
-				// fill up cache
-				for(RemoteObject object : remoteObjectList){
-					
-					object.delegates_ = new HashMap<String, RemoteObjectDelegate>();
-					object.delegates_.put(delegateToAdd.getClass().getSimpleName(),delegateToAdd);
-					objects_.put(object.uri, object);
+				if(A320Settings.memoryCacheEnabled){
+					// fill up cache
+					for(RemoteObject object : remoteObjectList){
+						
+						object.delegates_ = new HashMap<String, RemoteObjectDelegate>();
+						object.delegates_.put(delegateToAdd.getClass().getSimpleName(),delegateToAdd);
+						objects_.put(object.uri, object);
+					}
+
 				}
-				
+
 				Map<String, RemoteObjectDelegate> collectionDelegate  = null;
 				
 				if( objects_.get(collectionURL) != null ){
@@ -354,7 +470,7 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 				collectionDelegate.put(delegateToAdd.getClass().getSimpleName(),delegateToAdd);
 				delegates_.put(delegateToAdd.getClass().getSimpleName(), delegateToAdd);
 				objects_.put(collectionURL, collectionDelegate);
-
+			
 				return remoteObjectList;
 			}
 			
@@ -362,6 +478,9 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 			
 			// Check in local database
 			Object toRet = _dataSource.fetchById(this);
+			
+			// add this delegate in the list
+			delegates_.put(delegateToAdd.getClass().getSimpleName(),delegateToAdd);
 			
 			return toRet;
 		}
@@ -498,7 +617,7 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 	/**
 	 * data source object
 	 */
-	public IDataSource _dataSource;
+	public transient IDataSource _dataSource;
 
 	/*
 	 * request type GET or POST
@@ -508,16 +627,16 @@ public abstract class RemoteObject<T> extends AsyncTask<Object, Void, Object> {
 	/**
 	 * Map of Delegates to ignore duplicates
 	 */
-	protected HashMap<String, RemoteObjectDelegate> delegates_ = new HashMap<String, RemoteObjectDelegate>();
+	public transient HashMap<String, RemoteObjectDelegate> delegates_ = new HashMap<String, RemoteObjectDelegate>();
 
 	/**
 	 * List of Objects
 	 */
-	static protected Map<String, Object> objects_ = new HashMap<String, Object>();
+	static protected transient Map<String, Object> objects_ = new HashMap<String, Object>();
 
 	/**
 	 * Delegate instance to be set here so that it can be added later
 	 */
-	private RemoteObjectDelegate delegateToAdd;
+	private transient RemoteObjectDelegate delegateToAdd;
 	
 }

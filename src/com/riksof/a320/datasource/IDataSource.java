@@ -1,5 +1,6 @@
 package com.riksof.a320.datasource;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.riksof.a320.remote.RemoteObject;
@@ -10,7 +11,7 @@ import com.riksof.a320.remote.RemoteObject;
  * @author rizwan
  *
  */
-public interface IDataSource {
+public interface IDataSource extends Serializable {
 
 	public void save(String id, RemoteObject obj) throws DataSourceException;
 
@@ -25,4 +26,6 @@ public interface IDataSource {
 	public List<RemoteObject> fetch(RemoteObject obj) throws DataSourceException;
 
 	public int fetchRowCount() throws DataSourceException;
+
+	public void delete(RemoteObject obj) throws DataSourceException;
 }

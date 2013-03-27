@@ -35,6 +35,7 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -193,6 +194,46 @@ public class CoreHttpClient {
 
 			// Execute HTTP Post Request
 	        HttpResponse response = httpclient.execute(httppost);
+			HttpEntity entity = response.getEntity();
+
+			// Create and convert stream into string
+			InputStream inStream = entity.getContent();
+			responseString = convertStreamToString(inStream);
+			
+		} catch (SocketTimeoutException e) {
+			// throw custom server exception in case of Exception
+			Log.e("HttpClient", "Timeout Exception");
+			throw new ServerException("Request Timeout");
+			
+		} catch (IOException e) {
+			// throw custom server exception in case of Exception
+			Log.e("HttpClient", "IO Exception");
+			throw new ServerException("Request Timeout");
+		}
+
+		return responseString;
+	}
+
+	public String executePut(String url, String postMessage) throws ServerException {
+
+		HttpParams httpParameters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParameters, 100000);
+		HttpConnectionParams.setSoTimeout(httpParameters, 100000);
+
+		DefaultHttpClient httpclient = new DefaultHttpClient(httpParameters);
+		HttpPut httpput = new HttpPut(url);
+		httpput.setHeader( "Content-Type", "application/json" );
+		
+		// Response String
+		String responseString = null;
+
+		try {
+			
+			httpput.setEntity(new ByteArrayEntity(postMessage.toString()
+					.getBytes("UTF8")));
+
+			// Execute HTTP Post Request
+	        HttpResponse response = httpclient.execute(httpput);
 			HttpEntity entity = response.getEntity();
 
 			// Create and convert stream into string

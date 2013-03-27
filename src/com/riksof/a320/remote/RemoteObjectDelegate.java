@@ -16,13 +16,15 @@
 
 package com.riksof.a320.remote;
 
+import java.io.Serializable;
+
 /**
  * This interface is used to enhance the object loading with specific features
  * 
  * @author rizwan
  * 
  */
-public interface RemoteObjectDelegate {
+public interface RemoteObjectDelegate extends Serializable {
 
 	/**
 	 * We have received a response This method will be called when the response
